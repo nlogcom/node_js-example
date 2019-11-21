@@ -1,7 +1,25 @@
 language: node_js
-
+sudo: required
 node_js:
-- node
-- 'lts/*'
-
-cache: npm
+  - "8"
+install:
+  - npm ci
+cache:
+  directories:
+    - node_modules
+env:
+  - RELEASE=true
+matrix:
+  fast_finish: true
+before_install:
+  - sh ./scripts/install-chrome-headless-deps.sh
+  - npm install npm@5.8 -g
+script:
+  - npm run test
+deploy:
+  skip-cleanup: true
+  # Deploying Documentation and Test results
+  provider: script
+  script: npm run deploy:travis 
+  on:
+    branch: master
